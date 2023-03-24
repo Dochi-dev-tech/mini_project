@@ -1,3 +1,12 @@
+import styled from 'styled-components';
+import Header from './Header';
+
+const HomeContainer = styled.div``;
+
 export default function Home() {
-  return <div>Home</div>;
+  return (
+    <HomeContainer>
+      <Header />
+    </HomeContainer>
+  );
 }
