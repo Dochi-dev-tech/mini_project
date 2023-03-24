@@ -1,6 +1,9 @@
+import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import styled from 'styled-components';
+import Modal from './Modal';
 
-const Container = styled.header`
+const HeaderContainer = styled.header`
   display: flex;
   justify-content: center;
 `;
@@ -36,13 +39,18 @@ const Bar = styled.div`
 `;
 
 export default function Header() {
+  const [showModal, setShowModal] = useState(false);
+
   return (
-    <Container>
-      <Button>
+    <HeaderContainer>
+      <Button onClick={() => setShowModal(true)}>
         <Span>연차/당직</Span>
         <Bar></Bar>
         <Span>기간</Span>
       </Button>
-    </Container>
+
+      {showModal &&
+        createPortal(<Modal setShowModal={setShowModal} />, document.body)}
+    </HeaderContainer>
   );
 }
