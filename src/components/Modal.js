@@ -9,6 +9,7 @@ const ModalForm = styled.form`
   display: flex;
   flex-direction: column;
   align-items: center;
+  z-index: 10;
   padding: 20px;
   position: fixed;
   top: 50%;
@@ -37,10 +38,8 @@ const FormBtn = styled.button`
 
 const Overlay = styled.div`
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
+  z-index: 10;
   background-color: rgba(0, 0, 0, 0.7);
 `;
 
@@ -93,7 +92,8 @@ export default function Modal({ setShowModal }) {
           </label>
         </ModalSection>
         <DateRange
-          rangeColors={['#FF385C']}
+          color='#FF385C'
+          rangeColors={['#FF385C', '#FF385C', '#FF385C']}
           locale={locale}
           minDate={new Date()}
           ranges={date}
