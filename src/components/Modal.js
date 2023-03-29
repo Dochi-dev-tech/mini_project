@@ -3,7 +3,7 @@ import 'react-date-range/dist/styles.css'; // main style file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRange } from 'react-date-range';
 import { useState } from 'react';
-import locale from 'date-fns/locale/ko';
+import * as locales from 'react-date-range/dist/locale';
 
 const ModalForm = styled.form`
   display: flex;
@@ -23,7 +23,7 @@ const ModalSection = styled.section`
 `;
 
 const FormBtn = styled.button`
-  background-color: #ff385c;
+  background-color: rgb(61, 145, 255);
   color: white;
   border-radius: 9999px;
   padding: 5px 15px;
@@ -53,7 +53,7 @@ const FormInput = styled.input`
   height: 16px;
   border: 2px solid #999;
   &:checked {
-    border: 6px solid #ff385c;
+    border: 6px solid rgb(61, 145, 255);
   }
 `;
 
@@ -92,9 +92,7 @@ export default function Modal({ setShowModal }) {
           </label>
         </ModalSection>
         <DateRange
-          color='#FF385C'
-          rangeColors={['#FF385C', '#FF385C', '#FF385C']}
-          locale={locale}
+          locale={locales.ko}
           minDate={new Date()}
           ranges={date}
           onChange={(ranges) => setDate([ranges.selection])}

@@ -6,6 +6,7 @@ import getDay from 'date-fns/getDay';
 import ko from 'date-fns/locale/ko';
 import styled from 'styled-components';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import moment from 'moment/moment';
 
 const locales = {
   ko: ko,
@@ -33,7 +34,13 @@ const localizer = dateFnsLocalizer({
   locales,
 });
 
-// const myEventsList = [{}];
+const myEventsList = [
+  {
+    start: moment().toDate(),
+    end: moment().add(4, 'days').toDate(),
+    title: 'eungyeol',
+  },
+];
 
 const CalendarContainer = styled.div`
   margin-top: 30px;
@@ -47,9 +54,10 @@ export default function MyCalendar() {
       <Calendar
         localizer={localizer}
         style={{ height: '83vh' }}
-        // events={myEventsList}
+        events={myEventsList}
         messages={lang.ko}
         culture='ko'
+        views={['month', 'week', 'day']}
       />
     </CalendarContainer>
   );
