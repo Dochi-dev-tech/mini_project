@@ -4,6 +4,7 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 import { DateRange } from 'react-date-range';
 import { useState } from 'react';
 import * as locales from 'react-date-range/dist/locale';
+import supabase from '../utils/supabase';
 
 const ModalForm = styled.form`
   display: flex;
@@ -43,7 +44,7 @@ const Overlay = styled.div`
   background-color: rgba(0, 0, 0, 0.7);
 `;
 
-const FormInput = styled.input`
+const TypeInput = styled.input`
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -57,39 +58,70 @@ const FormInput = styled.input`
   }
 `;
 
+const NameInput = styled.input`
+  outline: none;
+  margin-left: 10px;
+  padding: 3px;
+  font-size: 1rem;
+`;
+
+const Label = styled.label`
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+`;
+
 export default function Modal({ setShowModal }) {
   const [date, setDate] = useState([
     { startDate: new Date(), endDate: new Date(), key: 'selection' },
   ]);
   const [selectedOpt, setSelectedOpt] = useState('');
+  const [name, setName] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const { error } = await supabase.from('schedule').insert({
+      start: date[0].startDate,
+      end: date[0].endDate,
+      name,
+      type: selectedOpt,
+    });
+
+    if (error) {
+      console.log(error);
+    } else {
+      setShowModal(false);
+    }
   };
 
   return (
     <div>
       <Overlay onClick={() => setShowModal(false)} />
       <ModalForm onSubmit={handleSubmit}>
+        <Label>
+          이름
+          <NameInput value={name} onChange={(e) => setName(e.target.value)} />
+        </Label>
         <ModalSection>
-          <label>
+          <Label>
             연차
-            <FormInput
+            <TypeInput
               type='radio'
               value='연차'
               checked={selectedOpt === '연차'}
               onChange={(e) => setSelectedOpt(e.target.value)}
             />
-          </label>{' '}
-          <label>
+          </Label>{' '}
+          <Label>
             당직
-            <FormInput
+            <TypeInput
               type='radio'
               value='당직'
               checked={selectedOpt === '당직'}
               onChange={(e) => setSelectedOpt(e.target.value)}
             />
-          </label>
+          </Label>
         </ModalSection>
         <DateRange
           locale={locales.ko}

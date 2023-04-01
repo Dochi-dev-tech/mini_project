@@ -1,7 +1,7 @@
-import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 import Modal from './Modal';
+import { useState } from 'react';
 
 const HeaderContainer = styled.header`
   display: flex;
