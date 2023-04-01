@@ -1,16 +1,9 @@
-import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
-import format from 'date-fns/format';
-import parse from 'date-fns/parse';
-import startOfWeek from 'date-fns/startOfWeek';
-import getDay from 'date-fns/getDay';
-import ko from 'date-fns/locale/ko';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
 import styled from 'styled-components';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import moment from 'moment/moment';
-
-const locales = {
-  ko: ko,
-};
+import moment from 'moment';
+import supabase from '../utils/supabase';
+import { useEffect, useState } from 'react';
 
 const lang = {
   ko: {
@@ -26,21 +19,7 @@ const lang = {
   },
 };
 
-const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek,
-  getDay,
-  locales,
-});
-
-const myEventsList = [
-  {
-    start: moment().toDate(),
-    end: moment().add(4, 'days').toDate(),
-    title: 'eungyeol',
-  },
-];
+const localizer = momentLocalizer(moment);
 
 const CalendarContainer = styled.div`
   margin-top: 30px;
@@ -49,6 +28,43 @@ const CalendarContainer = styled.div`
 `;
 
 export default function MyCalendar() {
+  const [schedule, setSchedule] = useState();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const { data, error } = await supabase.from('schedule').select();
+
+      if (error) {
+        console.log(error);
+      } else {
+        setSchedule(data);
+      }
+    };
+
+    fetchData();
+
+    const channel = supabase
+      .channel('Schedule')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'schedule' },
+        (payload) => {
+          setSchedule(payload.new, ...schedule);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [schedule]);
+
+  const myEventsList = schedule?.map((el) => ({
+    start: moment(el.start).add(1, 'days').toDate(),
+    end: moment(el.end).add(2, 'days').toDate(),
+    title: `${el.name}(${el.type})`,
+  }));
+
   return (
     <CalendarContainer>
       <Calendar
